@@ -1,4 +1,14 @@
+import React from 'react';
 import { AppRegistry } from 'react-native';
-import HourlyTracker from './app/HourlyTracker';
+import { Provider } from 'react-redux';
 
-AppRegistry.registerComponent('HourlyTracker', () => HourlyTracker);
+import HourlyTracker from './app/HourlyTracker';
+import store from './app/config/store';
+
+const AppContainer = () => (
+    <Provider store={store}>
+        <HourlyTracker />
+    </Provider>
+);
+
+AppRegistry.registerComponent('HourlyTracker', () => AppContainer);

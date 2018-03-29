@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { ListView, View, TextInput } from 'react-native';
+import { connect } from 'react-redux';
 import { Container, Header, Content, Button, Icon, Text, Body, Title } from 'native-base';
 import PopupDialog, { DialogTitle, DialogButton } from 'react-native-popup-dialog';
 
 import TaskList from './components/Task/TaskList';
 import Popup from './components/Popup/Popup';
 
+import { addTask } from './actions';
+
 const tasks = ['Task 1', 'Task 2', 'Task 3', 'Task 4'];
 
-export default class HourlyTracker extends Component {
+class HourlyTracker extends Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
@@ -51,13 +54,15 @@ export default class HourlyTracker extends Component {
             </Body>
           </Header>
 
-          <TaskList tasks={this.state.taskList} />
+          <TaskList tasks={this.props.tasks} />
         </Content>
         <Button
           rounded
           style={{ position: 'absolute', bottom: 40, right: 20, width: 60, height: 60, justifyContent: 'center' }}
           onPress={() => {
-            this.addPopup.show();
+            // TODO: Implementation
+            this.props.addTask('Hello');
+            // this.addPopup.show();
           }}
         >
           <Icon name="md-add" />
@@ -74,3 +79,9 @@ export default class HourlyTracker extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return state;
+}
+
+export default connect(mapStateToProps, { addTask })(HourlyTracker);

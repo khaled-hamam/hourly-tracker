@@ -4,7 +4,6 @@ import { List, ListItem, Button, Icon } from 'native-base';
 
 import Task from './Task';
 import Popup from '../Popup/Popup';
-import deleteTask from './Delete';
 
 export default class TaskList extends Component {
   constructor(props) {
@@ -39,7 +38,7 @@ export default class TaskList extends Component {
     return (
       <View>
         <List
-          dataSource={this.ds.cloneWithRows(this.state.taskList)}
+          dataSource={this.ds.cloneWithRows(this.props.tasks)}
           renderRow={data => (
             <ListItem>
               <Task name={data} />
@@ -48,7 +47,7 @@ export default class TaskList extends Component {
           renderLeftHiddenRow={(data, secId, rowId) => (
             <Button
               onPress={() => {
-                this.editPopup.show({taskName: this.state.taskList[rowId], rowId});
+                this.editPopup.show({taskName: this.props.taskList[rowId], rowId});
               }}
             >
               <Icon active name="md-create" />
