@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListView, View, TextInput } from 'react-native';
+import { ListView, View, TextInput, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { Container, Header, Content, Button, Icon, Text, Body, Title } from 'native-base';
 import PopupDialog, { DialogTitle, DialogButton } from 'react-native-popup-dialog';
@@ -7,70 +7,71 @@ import PopupDialog, { DialogTitle, DialogButton } from 'react-native-popup-dialo
 import TaskList from './components/Task/TaskList';
 import Popup from './components/Popup/Popup';
 
-import { addTask } from './actions';
-
-const tasks = ['Task 1', 'Task 2', 'Task 3', 'Task 4'];
+import { addTask, deleteTask, editTask } from './actions';
 
 class HourlyTracker extends Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.state = {
-      taskList: tasks
-    };
+
+    this._addTask = this._addTask.bind(this);
+    this._deleteTask = this._deleteTask.bind(this);
+    this._editTask = this._editTask.bind(this);
   }
 
   _addTask(taskName) {
-    // Validating Input (Checking for Duplicate)
-    if (!this._validateTaskName(taskName)) {
-      alert('Task names cannot be repeated.');
+    // Validating Input
+    taskName = taskName.trim();
+    if (!taskName) {
+      Alert.alert('You should enter a task name.');
       return;
     }
 
-    // TODO: Add in the AsyncStorage
     // Adding to the Current Tasks List
-    const newData = [...this.state.taskList];
-    newData.splice(0, 0, taskName);
-    this.setState({ taskList: newData });
+    this.props.addTask(taskName);
   }
 
-  _validateTaskName(taskName) {
-    // TODO: Check in the AsyncStorage
-    // Check Duplicate Task Names
-    if (this.state.taskList.indexOf(taskName) != -1)
-      // Duplicate Found
-      return false;
+  _deleteTask(rowId) {
+    Alert.alert(`Delete ${this.props.tasks[rowId]}`, 'Are you sure you want to delete this task?', [
+      { text: 'Cancel' },
+      { text: 'OK', onPress: () => this.props.deleteTask(rowId) }
+    ]);
+  }
 
-    return true; // No Duplicate
+  _editTask(taskName, rowId) {
+    // Validating Input
+    taskName = taskName.trim();
+    if (!taskName) {
+      Alert.alert('You should enter a task name.');
+      return;
+    }
+
+    // Editing in the Current Tasks List
+    this.props.editTask(rowId, taskName);
   }
 
   render() {
     return (
       <Container>
+        <Header noShadow style={{ backgroundColor: '#fff' }}>
+          <Body>
+            <Title style={{ color: '#000' }}>Tasks</Title>
+          </Body>
+        </Header>
         <Content>
-          <Header noShadow style={{ backgroundColor: '#fff' }}>
-            <Body>
-              <Title style={{ color: '#000' }}>Tasks</Title>
-            </Body>
-          </Header>
-
-          <TaskList tasks={this.props.tasks} />
+          <TaskList tasks={this.props.tasks} deleteTask={this._deleteTask} editTask={this._editTask} />
         </Content>
         <Button
           rounded
           style={{ position: 'absolute', bottom: 40, right: 20, width: 60, height: 60, justifyContent: 'center' }}
-          onPress={() => {
-            // TODO: Implementation
-            this.props.addTask('Hello');
-            // this.addPopup.show();
-          }}
+          onPress={() => this.addPopup.show()}
         >
           <Icon name="md-add" />
         </Button>
 
         <Popup
-          title='Add Task'
-          submit={this._addTask.bind(this)}
+          title="Add Task"
+          submit={this._addTask}
           ref={addPopup => {
             this.addPopup = addPopup;
           }}
@@ -84,4 +85,4 @@ function mapStateToProps(state) {
   return state;
 }
 
-export default connect(mapStateToProps, { addTask })(HourlyTracker);
+export default connect(mapStateToProps, { addTask, deleteTask, editTask })(HourlyTracker);
