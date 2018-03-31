@@ -10,7 +10,7 @@ export default class Task extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text>{this.props.name}</Text>
+        <Text>{this.props.task.getName()}</Text>
       </View>
     );
   }

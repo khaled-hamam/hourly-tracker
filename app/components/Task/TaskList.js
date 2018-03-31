@@ -18,7 +18,7 @@ export default class TaskList extends Component {
           dataSource={this.ds.cloneWithRows(this.props.tasks)}
           renderRow={task => (
             <ListItem>
-              <Task name={task} />
+              <Task task={task} />
             </ListItem>
           )}
           renderLeftHiddenRow={(data, secId, rowId, rowMap) => (
