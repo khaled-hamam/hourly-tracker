@@ -1,5 +1,5 @@
 export default class Timer {
-    constructor(time) {
+    constructor(time = '00:00:00') {
         // TODO: Validate Time Input
 
         // splitting into [hh : mm : ss]
